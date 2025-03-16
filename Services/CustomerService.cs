@@ -1,23 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProvaPub.Interfaces;
 using ProvaPub.Models;
 using ProvaPub.Repository;
 
 namespace ProvaPub.Services
 {
-    public class CustomerService
+    public class CustomerService : BaseService<Customer>, ICustomerService
     {
-        TestDbContext _ctx;
-
-        public CustomerService(TestDbContext ctx)
+        private readonly TestDbContext _ctx;
+        public CustomerService(TestDbContext ctx) : base(ctx)
         {
             _ctx = ctx;
         }
 
-        public CustomerList ListCustomers(int page)
+        public PaginatedList<Customer> ListCustomers(int page)
         {
-            return new CustomerList() { HasNext = false, TotalCount = 10, Customers = _ctx.Customers.ToList() };
+            return GetListPaginated(page);
         }
-
         public async Task<bool> CanPurchase(int customerId, decimal purchaseValue)
         {
             if (customerId <= 0) throw new ArgumentOutOfRangeException(nameof(customerId));

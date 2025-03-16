@@ -19,11 +19,20 @@ namespace ProvaPub.Services
         }
         public async Task<int> GetRandom()
 		{
-            var number =  new Random(seed).Next(100);
+            Random random = new(seed);
+            int number;
+            do
+            {
+                number = random.Next(100);
+
+            } while (_ctx.Numbers.Any(n => n.Number == number));
+
             _ctx.Numbers.Add(new RandomNumber() { Number = number });
             _ctx.SaveChanges();
-			return number;
-		}
+
+            return number;
+
+        }
 
 	}
 }
